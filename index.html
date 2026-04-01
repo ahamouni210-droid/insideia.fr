@@ -4,866 +4,568 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Agent IA — L'information IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#fafafa;--white:#ffffff;--border:#e5e5e5;
-  --text:#111;--muted:#888;--dim:#ccc;
-  --purple:#7c3aed;--purple-light:#ede9fe;--purple-border:#c4b5fd;
-  --green:#16a34a;--green-light:#dcfce7;
-  --yellow:#d97706;--yellow-light:#fef3c7;
-  --red:#dc2626;--red-light:#fee2e2;
-  --sidebar:220px;
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c26;--border:#2a2a3a;
+  --text:#f0f0f8;--muted:#6b6b8a;--dim:#3a3a4a;
+  --accent:#7c5cfc;--accent2:#a78bfa;
+  --green:#22c55e;--green-bg:rgba(34,197,94,.1);
+  --yellow:#f59e0b;--yellow-bg:rgba(245,158,11,.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,.1);
+  --sidebar:240px;--radius:12px;
 }
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px}
-
-/* SIDEBAR */
-.sidebar{
-  position:fixed;left:0;top:0;width:var(--sidebar);height:100vh;
-  background:var(--white);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:100;
-}
-.logo{padding:20px;border-bottom:1px solid var(--border)}
-.logo-name{font-size:15px;font-weight:700;color:var(--text)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px;line-height:1.5}
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar);height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.logo{padding:24px 20px;border-bottom:1px solid var(--border)}
+.logo-name{font-size:15px;font-weight:700}
 .logo-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.logo-status{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--green);background:var(--green-light);padding:3px 8px;border-radius:20px;font-weight:500}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.logo-badge{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11px;font-weight:600;color:var(--green);background:var(--green-bg);padding:4px 10px;border-radius:20px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
 .nav{flex:1;padding:12px 0;overflow-y:auto}
-.nav-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;padding:10px 16px 4px;font-weight:600}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 16px;font-size:13px;font-weight:500;
-  color:var(--muted);cursor:pointer;transition:all .1s;
-  border-radius:0;text-decoration:none;
-}
-.nav-item:hover{color:var(--text);background:#f5f5f5}
-.nav-item.active{color:var(--purple);background:var(--purple-light);font-weight:600}
-.nav-count{margin-left:auto;font-size:11px;padding:1px 7px;border-radius:10px;font-weight:600}
-.nc-green{background:var(--green-light);color:var(--green)}
-.nc-yellow{background:var(--yellow-light);color:var(--yellow)}
-.nc-purple{background:var(--purple-light);color:var(--purple)}
-
-.sidebar-bottom{padding:16px;border-top:1px solid var(--border)}
+.nav-section{font-size:10px;font-weight:600;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;padding:14px 20px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--accent2);background:rgba(124,92,252,.1)}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.nb-green{background:var(--green-bg);color:var(--green)}
+.nb-yellow{background:var(--yellow-bg);color:var(--yellow)}
+.nb-accent{background:rgba(124,92,252,.15);color:var(--accent2)}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border)}
 .user-row{display:flex;align-items:center;gap:10px}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
+.avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
 .user-name{font-size:13px;font-weight:600}
 .user-handle{font-size:11px;color:var(--muted)}
-
-/* MAIN */
-.main{margin-left:var(--sidebar);flex:1;padding:28px;max-width:calc(100vw - var(--sidebar))}
-
-/* PAGES */
+.main{margin-left:var(--sidebar);flex:1;padding:32px;max-width:calc(100vw - var(--sidebar))}
 .page{display:none}
 .page.active{display:block}
-
-/* TOPBAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.page-title{font-size:20px;font-weight:700}
-.page-sub{font-size:12px;color:var(--muted);margin-top:3px}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'Inter',sans-serif}
-.btn-primary{background:var(--purple);color:#fff}
-.btn-primary:hover{background:#6d28d9}
-.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
-.btn-outline:hover{border-color:#999;background:#f9f9f9}
-.btn-danger{background:var(--red-light);color:var(--red);border:1px solid #fca5a5}
-.btn-danger:hover{background:#fecaca}
-.btn-green{background:var(--green);color:#fff}
-.btn-green:hover{background:#15803d}
-.btn-sm{padding:5px 12px;font-size:12px}
-
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px}
-.stat-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
-.stat-value{font-size:24px;font-weight:700}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.4px}
+.page-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.topbar-actions{display:flex;gap:8px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif;line-height:1}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#6b4de8}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-outline:hover{border-color:var(--dim);color:var(--text)}
+.btn-green{background:var(--green);color:#000;font-weight:700}
+.btn-green:hover{background:#16a34a;color:#fff}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.8px}
+.card-title span{color:var(--accent2);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.stat-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.stat-value{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .stat-note{font-size:11px;color:var(--muted);margin-top:4px}
-
-/* CARDS */
-.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
-.card-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
-
-/* GRID */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-
-/* FORM */
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-.input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;background:#fff}
-.input:focus{border-color:var(--purple)}
-.input::placeholder{color:var(--dim)}
-select.input{cursor:pointer}
-
-/* BADGE */
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
-.badge-green{background:var(--green-light);color:var(--green)}
-.badge-yellow{background:var(--yellow-light);color:var(--yellow)}
-.badge-purple{background:var(--purple-light);color:var(--purple)}
-.badge-red{background:var(--red-light);color:var(--red)}
-.badge-gray{background:#f5f5f5;color:var(--muted)}
-
-/* ROW */
-.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.stat-note.up{color:var(--green)}
+.stat-note.warn{color:var(--yellow)}
+.alert{padding:14px 18px;border-radius:10px;font-size:13px;margin-bottom:18px;display:flex;align-items:flex-start;gap:10px}
+.alert-warning{background:var(--yellow-bg);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+.alert-success{background:var(--green-bg);border:1px solid rgba(34,197,94,.2);color:var(--green)}
+.alert a{color:inherit;font-weight:600}
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
+.badge-dim{background:var(--surface2);color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .row:last-child{border:none}
-
-/* TOGGLE */
-.toggle{width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
-.toggle.on{background:var(--purple)}
+.post-num{width:32px;height:32px;border-radius:8px;background:rgba(124,92,252,.15);color:var(--accent2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.post-info{flex:1;min-width:0}
+.post-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.input{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--accent)}
+.input::placeholder{color:var(--dim)}
+textarea.input{resize:vertical;line-height:1.6}
+.toggle{width:38px;height:22px;border-radius:11px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.toggle.on{background:var(--accent)}
 .toggle.off{background:var(--dim)}
-.toggle::after{content:'';position:absolute;top:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle::after{content:'';position:absolute;top:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .2s}
 .toggle.on::after{left:19px}
 .toggle.off::after{left:3px}
-
-/* INSTA CONNECT */
-.connect-box{border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;background:#fafafa}
-.connect-box.connected{border:2px solid var(--green);background:var(--green-light);border-style:solid}
-.connect-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.connect-title{font-size:15px;font-weight:700;margin-bottom:6px}
-.connect-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
-
-/* TOKEN INPUT */
-.token-section{background:#f8f7ff;border:1px solid var(--purple-border);border-radius:10px;padding:16px;margin-top:14px}
-.token-steps{counter-reset:step}
+.steps-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px;margin:14px 0}
 .step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
 .step:last-child{margin:0}
-.step-num{width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-text{font-size:12px;color:#555;line-height:1.5}
-.step-text a{color:var(--purple);font-weight:600}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--muted);line-height:1.5}
 .step-text strong{color:var(--text)}
-
-/* POSTS */
-.post-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0f0}
-.post-row:last-child{border:none}
-.post-num{width:30px;height:30px;border-radius:7px;background:var(--purple-light);color:var(--purple);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.post-info{flex:1;min-width:0}
-.post-title-t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.post-meta-t{font-size:11px;color:var(--muted);margin-top:2px}
-
-/* SLIDES PREVIEW */
-.slides-row{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px}
-.slide-mini{width:80px;height:104px;border-radius:7px;flex-shrink:0;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:transform .15s}
-.slide-mini:hover{transform:scale(1.06);border-color:var(--purple)}
-.slide-dark{background:#111;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:7px}
-.slide-dark-text{font-size:6.5px;font-weight:800;color:#fff;line-height:1.4;text-transform:uppercase}
-.slide-dark-logo{font-size:5px;color:#a855f7;margin-top:4px;font-weight:700}
-.slide-light{background:#f5f0e8;width:100%;height:100%;padding:6px;display:flex;flex-direction:column}
-.slide-n{font-size:5.5px;color:#999;margin-bottom:2px}
-.slide-h{font-size:6.5px;font-weight:800;color:#111;line-height:1.3;margin-bottom:3px}
-.slide-p{font-size:5px;color:#555;line-height:1.5;flex:1}
-.slide-logo{font-size:5px;color:#333;font-weight:700;text-align:center;padding-top:4px;border-top:1px solid #ddd;margin-top:auto}
-
-/* LOGS */
-.log{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start}
-.log:last-child{border:none}
-.log-t{font-size:11px;color:var(--dim);flex-shrink:0;width:44px;padding-top:1px}
-.log-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.step-text a{color:var(--accent2)}
+.log-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.log-item:last-child{border:none}
+.log-time{font-size:11px;color:var(--dim);width:42px;flex-shrink:0;font-family:'DM Mono',monospace}
+.log-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .log-ok .log-dot{background:var(--green)}
 .log-warn .log-dot{background:var(--yellow)}
-.log-info .log-dot{background:var(--purple)}
+.log-info .log-dot{background:var(--accent)}
 .log-err .log-dot{background:var(--red)}
-.log-msg{font-size:12px;color:#444;line-height:1.4}
-
-/* ALERT */
-.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
-.alert-warning{background:var(--yellow-light);border:1px solid #fcd34d;color:#92400e}
-.alert-info{background:var(--purple-light);border:1px solid var(--purple-border);color:#5b21b6}
-.alert-success{background:var(--green-light);border:1px solid #86efac;color:#166534}
-
-/* PROMPT */
-.prompt-area{width:100%;min-height:120px;padding:12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;color:var(--text);resize:vertical;outline:none;line-height:1.6}
-.prompt-area:focus{border-color:var(--purple)}
+.log-msg{font-size:12px;color:#aaa;line-height:1.5}
+.slides-row{display:flex;gap:10px;overflow-x:auto;padding:4px 0 8px}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.caption-box{font-size:12px;background:var(--surface2);padding:12px;border-radius:8px;border:1px solid var(--border);color:var(--muted);line-height:1.6;margin-top:10px;white-space:pre-wrap}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-name">L'information IA</div>
-    <div class="logo-sub">Agent Instagram</div>
-    <div class="logo-status"><div class="status-dot"></div>Agent actif</div>
+    <div class="logo-sub">Agent Instagram autonome</div>
+    <div class="logo-badge"><div class="dot"></div>Agent actif</div>
   </div>
   <nav class="nav">
-    <div class="nav-label">Principal</div>
-    <a class="nav-item active" onclick="showPage('dashboard')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor" opacity=".4"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor" opacity=".4"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor" opacity=".2"/></svg>
-      Dashboard
-      <span class="nav-count nc-green">Live</span>
-    </a>
-    <a class="nav-item" onclick="showPage('sources')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 4v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Sources
-      <span class="nav-count nc-green">4</span>
-    </a>
-    <div class="nav-label">Contenu</div>
-    <a class="nav-item" onclick="showPage('posts')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h6M4.5 9.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Posts générés
-      <span class="nav-count nc-yellow">2</span>
-    </a>
-    <a class="nav-item" onclick="showPage('prompt')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M2 7.5h7M2 11h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Prompt IA
-    </a>
-    <div class="nav-label">Connexions</div>
-    <a class="nav-item" id="nav-insta" onclick="showPage('instagram')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="2" width="11" height="11" rx="3" stroke="currentColor" stroke-width="1.2"/><circle cx="7.5" cy="7.5" r="2.2" stroke="currentColor" stroke-width="1.2"/><circle cx="10.8" cy="4.2" r=".7" fill="currentColor"/></svg>
-      Instagram
-      <span class="nav-count nc-yellow" id="insta-nav-badge">!</span>
-    </a>
-    <a class="nav-item" onclick="showPage('logs')">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 3h11M2 6.5h8M2 10h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Logs
-    </a>
+    <div class="nav-section">Principal</div>
+    <button class="nav-item active" onclick="goTo('dashboard',this)">📊 Dashboard <span class="nav-badge nb-green">Live</span></button>
+    <button class="nav-item" onclick="goTo('sources',this)">🔍 Sources <span class="nav-badge nb-green">4</span></button>
+    <div class="nav-section">Contenu</div>
+    <button class="nav-item" onclick="goTo('generer',this)">⚡ Générer & Publier <span class="nav-badge nb-accent">IA</span></button>
+    <button class="nav-item" onclick="goTo('posts',this)">📝 Posts</button>
+    <div class="nav-section">Connexions</div>
+    <button class="nav-item" onclick="goTo('instagram',this)">📸 Instagram <span class="nav-badge nb-yellow" id="insta-badge">!</span></button>
+    <button class="nav-item" onclick="goTo('logs',this)">📋 Logs</button>
   </nav>
-  <div class="sidebar-bottom">
+  <div class="sidebar-footer">
     <div class="user-row">
-      <div class="user-avatar">IA</div>
-      <div>
-        <div class="user-name">Admin</div>
-        <div class="user-handle">@linformation.ia</div>
-      </div>
+      <div class="avatar">IA</div>
+      <div><div class="user-name">Admin</div><div class="user-handle">@insideia.fr</div></div>
     </div>
   </div>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
 
-  <!-- ═══ DASHBOARD ═══ -->
+  <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="topbar">
-      <div>
-        <div class="page-title">Dashboard</div>
-        <div class="page-sub" id="scan-status">Dernier scan : il y a 12 min · Prochain dans 48 min</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline" onclick="showPage('instagram')">Connecter Instagram</button>
-        <button class="btn btn-primary" onclick="lancerScan()">▶ Lancer le scan</button>
+      <div><div class="page-title">Dashboard</div><div class="page-sub" id="scan-status">Dernier scan : il y a 12 min</div></div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline" onclick="goTo('instagram',null)">Connecter Instagram</button>
+        <button class="btn btn-primary" onclick="lancerScan()">▶ Scanner</button>
       </div>
     </div>
-
-    <div id="alert-insta" class="alert alert-warning">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><path d="M8 2L14 13H2L8 2z" stroke="#d97706" stroke-width="1.3"/><path d="M8 6v4M8 11.5v.5" stroke="#d97706" stroke-width="1.3" stroke-linecap="round"/></svg>
-      <span><strong>Instagram non connecté</strong> — Connecte ton compte pour activer la publication automatique. <a href="#" onclick="showPage('instagram');return false" style="color:#d97706;font-weight:600">Configurer →</a></span>
-    </div>
-
+    <div id="alert-insta" class="alert alert-warning">⚠ <span><strong>Instagram non connecté</strong> — <a href="#" onclick="goTo('instagram',null);return false">Configurer →</a></span></div>
     <div class="stats">
-      <div class="stat"><div class="stat-label">Posts publiés</div><div class="stat-value">24</div><div class="stat-note" style="color:var(--green)">+3 cette semaine</div></div>
-      <div class="stat"><div class="stat-label">Sources actives</div><div class="stat-value">4</div><div class="stat-note">Toutes surveillées</div></div>
-      <div class="stat"><div class="stat-label">En attente</div><div class="stat-value">2</div><div class="stat-note" style="color:var(--yellow)">À publier</div></div>
-      <div class="stat"><div class="stat-label">Tokens Claude</div><div class="stat-value">4.2k</div><div class="stat-note">~0.04$ ce mois</div></div>
+      <div class="stat"><div class="stat-label">Posts publiés</div><div class="stat-value">24</div><div class="stat-note up">+3 cette semaine</div></div>
+      <div class="stat"><div class="stat-label">Sources</div><div class="stat-value">4</div><div class="stat-note">Toutes actives</div></div>
+      <div class="stat"><div class="stat-label">En attente</div><div class="stat-value">2</div><div class="stat-note warn">À publier</div></div>
+      <div class="stat"><div class="stat-label">Coût IA</div><div class="stat-value">0€</div><div class="stat-note">Groq gratuit</div></div>
     </div>
+    <div class="card">
+      <div class="card-title"><span>●</span> Derniers posts</div>
+      <div class="row"><div class="post-num">01</div><div class="post-info"><div class="post-title">Claude 4 Opus — Nouvelles capacités</div><div class="post-meta">Il y a 2h · anthropic.com</div></div><span class="badge badge-green">Publié</span></div>
+      <div class="row"><div class="post-num">02</div><div class="post-info"><div class="post-title">Claude Code Channels — Telegram & Discord</div><div class="post-meta">Il y a 5h · docs.claude.ai</div></div><span class="badge badge-green">Publié</span></div>
+      <div class="row"><div class="post-num">03</div><div class="post-info"><div class="post-title">API Vision — Analyse vidéo temps réel</div><div class="post-meta">Il y a 8h · @AnthropicAI</div></div><span class="badge badge-yellow">En attente</span></div>
+    </div>
+  </div>
+
+  <!-- GENERER & PUBLIER -->
+  <div class="page" id="page-generer">
+    <div class="topbar"><div><div class="page-title">Générer & Publier</div><div class="page-sub">Actualité → IA génère → slides violettes → publication Instagram</div></div></div>
 
     <div class="card">
-      <div class="card-title">Derniers posts générés</div>
-      <div class="post-row">
-        <div class="post-num">01</div>
-        <div class="post-info"><div class="post-title-t">Claude 4 Opus — Nouvelles capacités de raisonnement</div><div class="post-meta-t">Il y a 2h · anthropic.com/news · 3 slides</div></div>
-        <span class="badge badge-green">Publié</span>
+      <div class="card-title"><span>①</span> Colle ton actualité</div>
+      <div class="field"><textarea class="input" id="article-input" rows="5" placeholder="Colle ici un article, tweet ou résumé d'actualité IA..."></textarea></div>
+      <button class="btn btn-primary" id="btn-generer" onclick="genererSlides()">⚡ Générer les slides avec Groq</button>
+      <div id="gen-loading" style="display:none;margin-top:12px;color:var(--muted);font-size:13px">
+        <div class="dot" style="display:inline-block;margin-right:8px"></div><span id="gen-loading-text">Génération en cours...</span>
       </div>
-      <div class="post-row">
-        <div class="post-num">02</div>
-        <div class="post-info"><div class="post-title-t">Claude Code Channels — Contrôle via Telegram & Discord</div><div class="post-meta-t">Il y a 5h · docs.claude.ai · 3 slides</div></div>
-        <span class="badge badge-green">Publié</span>
-      </div>
-      <div class="post-row">
-        <div class="post-num">03</div>
-        <div class="post-info"><div class="post-title-t">API Vision étendue — Analyse vidéo en temps réel</div><div class="post-meta-t">Il y a 8h · @AnthropicAI · 3 slides · En attente</div></div>
-        <span class="badge badge-yellow">En attente</span>
-        <button class="btn btn-green btn-sm" onclick="publierPost()">Publier</button>
-      </div>
+    </div>
 
-      <hr class="divider"/>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Aperçu slides — Post #03</div>
-      <div class="slides-row">
-        <div class="slide-mini"><div class="slide-dark"><div class="slide-dark-text">L'IA évolue plus vite que jamais.</div><div class="slide-dark-logo">L'information IA</div></div></div>
-        <div class="slide-mini"><div class="slide-light"><div class="slide-n">01</div><div class="slide-h">API Vision Étendue</div><div class="slide-p">Claude analyse des vidéos complètes en temps réel depuis n'importe quelle source.</div><div class="slide-logo">L'information IA</div></div></div>
-        <div class="slide-mini"><div class="slide-light"><div class="slide-n">02</div><div class="slide-h">Pour les développeurs</div><div class="slide-p">L'API accepte des flux vidéo. Les tokens visuels sont traités 3x plus vite.</div><div class="slide-logo">L'information IA</div></div></div>
-        <div class="slide-mini"><div class="slide-light"><div class="slide-n">03</div><div class="slide-h">Disponible maintenant</div><div class="slide-p">Accès via claude-sonnet-4 et claude-opus-4 dès aujourd'hui en beta.</div><div class="slide-logo">L'information IA</div></div></div>
-        <div class="slide-mini"><div class="slide-dark" style="align-items:center;justify-content:center;text-align:center"><div class="slide-dark-text" style="text-align:center">Abonne-toi pour en savoir plus !</div><div class="slide-dark-logo">L'information IA</div></div></div>
+    <div id="result-section" style="display:none">
+      <div class="card">
+        <div class="card-title"><span>②</span> Aperçu des slides <small id="slides-count" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)"></small></div>
+        <div class="slides-row" id="slides-preview"></div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">💡 Clique sur une slide pour télécharger le PNG 1080×1350</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>③</span> Caption Instagram</div>
+        <div id="caption-display" class="caption-box"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>④</span> Publier sur Instagram</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Upload automatique sur ImgBB → publication carousel sur <strong style="color:var(--text)">@insideia.fr</strong></p>
+        <button class="btn btn-green" id="btn-publier" onclick="publierCarousel()">🚀 Publier le carousel sur Instagram</button>
+        <div id="publish-status" style="margin-top:12px;font-size:13px"></div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ INSTAGRAM ═══ -->
+  <!-- INSTAGRAM -->
   <div class="page" id="page-instagram">
-    <div class="topbar">
-      <div>
-        <div class="page-title">Connexion Instagram</div>
-        <div class="page-sub">Connecte ton compte pour publier automatiquement</div>
-      </div>
-    </div>
-
-    <!-- STEP 1 : pas connecté -->
+    <div class="topbar"><div><div class="page-title">Connexion Instagram</div><div class="page-sub">Connecte @insideia.fr pour activer la publication</div></div></div>
     <div id="insta-not-connected">
-      <div class="alert alert-info">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="6" stroke="#7c3aed" stroke-width="1.3"/><path d="M8 5v4M8 10.5v.5" stroke="#7c3aed" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <span>Pour publier automatiquement sur Instagram, tu as besoin d'un <strong>compte Business ou Creator</strong> et d'un <strong>token Meta API</strong>. Suis les étapes ci-dessous.</span>
-      </div>
-
-      <div class="grid-2" style="margin-bottom:16px">
-        <div class="card" style="margin:0">
-          <div class="card-title">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="2.5" stroke="var(--purple)" stroke-width="1.2"/><circle cx="7" cy="7" r="2" stroke="var(--purple)" stroke-width="1.2"/><circle cx="10" cy="4" r=".7" fill="var(--purple)"/></svg>
-            Étape 1 — Compte Instagram
-          </div>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Ton compte doit être en mode <strong>Business</strong> ou <strong>Creator</strong>. Si c'est un compte personnel, voici comment changer :</p>
-          <ol style="font-size:13px;color:#555;padding-left:18px;line-height:2">
-            <li>Ouvre Instagram → ton profil</li>
-            <li>Paramètres → Compte</li>
-            <li>"Passer en compte professionnel"</li>
-            <li>Choisir <strong>Business</strong> ou <strong>Creator</strong></li>
-          </ol>
-          <hr class="divider"/>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Mon compte est actuellement :</div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-outline btn-sm" id="type-business" onclick="selectAccountType('business')">Business</button>
-            <button class="btn btn-outline btn-sm" id="type-creator" onclick="selectAccountType('creator')">Creator</button>
-            <button class="btn btn-outline btn-sm" id="type-personal" onclick="selectAccountType('personal')">Personnel</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0">
-          <div class="card-title">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="2" stroke="var(--purple)" stroke-width="1.2"/><path d="M5 7l2 2 4-4" stroke="var(--purple)" stroke-width="1.2" stroke-linecap="round"/></svg>
-            Étape 2 — Page Facebook
-          </div>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">L'API Meta exige une <strong>Page Facebook</strong> liée à ton compte Instagram. C'est obligatoire, même si tu ne l'utilises pas.</p>
-          <ol style="font-size:13px;color:#555;padding-left:18px;line-height:2">
-            <li>Va sur <strong>facebook.com/pages/create</strong></li>
-            <li>Crée une page "L'information IA"</li>
-            <li>Dans Instagram → Paramètres → Compte lié → Page Facebook</li>
-          </ol>
-          <hr class="divider"/>
-          <a href="https://www.facebook.com/pages/create" target="_blank" class="btn btn-outline btn-sm">Créer une Page Facebook →</a>
-        </div>
-      </div>
-
       <div class="card">
-        <div class="card-title">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v3M7 10v3M1 7h3M10 7h3" stroke="var(--purple)" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="7" r="2.5" stroke="var(--purple)" stroke-width="1.2"/></svg>
-          Étape 3 — Obtenir ton Token Meta API
+        <div class="card-title"><span>▶</span> Token Meta & ID Instagram</div>
+        <div class="steps-box">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Va sur <a href="https://business.facebook.com/settings/system-users" target="_blank">business.facebook.com → Utilisateurs système</a></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Clique sur <strong>agent-ia</strong> → <strong>Générer un token</strong></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Colle le token et l'ID Instagram ci-dessous</div></div>
         </div>
-
-        <div class="token-section">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text">Va sur <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> → "Mes apps" → <strong>Créer une app</strong></div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text">Choisis le type <strong>"Business"</strong> → donne un nom (ex: Agent IA Instagram) → Créer</div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text">Dans ton app → <strong>Produits</strong> → ajoute <strong>"Instagram Graph API"</strong></div>
-          </div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-text">Va dans <strong>Outils → Explorateur d'API Graph</strong> → génère un token avec les permissions : <strong>instagram_basic, instagram_content_publish, pages_read_engagement</strong></div>
-          </div>
-          <div class="step">
-            <div class="step-num">5</div>
-            <div class="step-text">Copie le token et colle-le ci-dessous</div>
-          </div>
+        <div class="field"><label>Token Meta</label><input class="input" type="password" id="meta-token" placeholder="EAAl..."/></div>
+        <div class="field"><label>Instagram Account ID</label><input class="input" type="text" id="insta-id" placeholder="17841439188239554"/></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="testerConnexion()">Tester</button>
+          <button class="btn btn-primary" onclick="connecterInstagram()">Connecter</button>
         </div>
-
-        <hr class="divider"/>
-
-        <div class="field" style="margin-top:14px">
-          <label>Ton Token Meta (Instagram Graph API)</label>
-          <input class="input" type="password" id="meta-token" placeholder="EAAl... (colle ton token ici)"/>
-        </div>
-        <div class="field">
-          <label>Ton Instagram Business Account ID</label>
-          <input class="input" type="text" id="insta-account-id" placeholder="17841400000000000"/>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Trouve-le dans : Instagram → Paramètres → À propos → ID du compte</div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:4px">
-          <button class="btn btn-outline" onclick="testerConnexion()">Tester la connexion</button>
-          <button class="btn btn-primary" onclick="connecterInstagram()">Connecter Instagram</button>
-        </div>
-        <div id="test-result" style="margin-top:10px;font-size:12px;display:none"></div>
+        <div id="test-result" style="margin-top:10px;font-size:13px;display:none"></div>
       </div>
     </div>
-
-    <!-- STEP 2 : connecté -->
     <div id="insta-connected" style="display:none">
-      <div class="alert alert-success">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="6" stroke="var(--green)" stroke-width="1.3"/><path d="M5 8l2 2 4-4" stroke="var(--green)" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <span><strong>Instagram connecté avec succès !</strong> Ton agent peut maintenant publier automatiquement sur ton compte.</span>
-      </div>
+      <div class="alert alert-success">✅ <strong>Instagram connecté !</strong> L'agent peut publier automatiquement.</div>
       <div class="card">
-        <div class="card-title">Compte connecté</div>
+        <div class="card-title"><span>●</span> Compte connecté</div>
         <div class="row">
-          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f97316,#a855f7);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0">IA</div>
-          <div style="flex:1"><div style="font-weight:600">L'information IA</div><div style="font-size:12px;color:var(--muted)">@linformation.ia · Business</div></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f97316,#a855f7);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0">IA</div>
+          <div style="flex:1"><div style="font-weight:600">L'information IA</div><div style="font-size:12px;color:var(--muted)">@insideia.fr</div></div>
           <span class="badge badge-green">Connecté</span>
         </div>
         <hr class="divider"/>
-        <div class="row"><span style="color:var(--muted);font-size:13px">Token</span><span style="font-size:13px;font-weight:500" id="token-display">EAAl••••••••</span></div>
-        <div class="row"><span style="color:var(--muted);font-size:13px">Permissions</span><span style="font-size:13px">instagram_content_publish ✓</span></div>
-        <div class="row" style="border:none"><span style="color:var(--muted);font-size:13px">Mode publication</span><span class="badge badge-green">Automatique</span></div>
+        <div class="row"><span style="color:var(--muted)">Token</span><span id="token-display" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)"></span></div>
+        <div class="row"><span style="color:var(--muted)">Permissions</span><span>instagram_content_publish ✓</span></div>
+        <div class="row" style="border:none"><span style="color:var(--muted)">Publication</span><span class="badge badge-green">Automatique</span></div>
         <hr class="divider"/>
-        <button class="btn btn-danger btn-sm" onclick="deconnecterInstagram()">Déconnecter le compte</button>
+        <button class="btn btn-danger btn-sm" onclick="deconnecter()">Déconnecter</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══ SOURCES ═══ -->
+  <!-- SOURCES -->
   <div class="page" id="page-sources">
-    <div class="topbar"><div><div class="page-title">Sources surveillées</div><div class="page-sub">URLs que l'agent vérifie pour détecter les nouveautés</div></div><button class="btn btn-primary btn-sm" onclick="lancerScan()">▶ Scanner maintenant</button></div>
+    <div class="topbar"><div><div class="page-title">Sources surveillées</div><div class="page-sub">URLs que l'agent vérifie automatiquement</div></div><button class="btn btn-primary btn-sm" onclick="lancerScan()">▶ Scanner</button></div>
     <div class="card">
-      <div class="row"><div style="font-size:13px;font-weight:600;flex:1">anthropic.com/news</div><span class="badge badge-gray">RSS</span><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
-      <div class="row"><div style="font-size:13px;font-weight:600;flex:1">docs.claude.ai</div><span class="badge badge-gray">Scrape</span><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
-      <div class="row"><div style="font-size:13px;font-weight:600;flex:1">@AnthropicAI (X / Twitter)</div><span class="badge badge-gray">API</span><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
-      <div class="row"><div style="font-size:13px;font-weight:600;flex:1">claude.ai/changelog</div><span class="badge badge-gray">Scrape</span><div class="toggle off" onclick="toggleSwitch(this)"></div></div>
+      <div class="row"><div style="flex:1;font-weight:600">anthropic.com/news</div><span class="badge badge-dim">RSS</span><div class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="row"><div style="flex:1;font-weight:600">docs.claude.ai</div><span class="badge badge-dim">Scrape</span><div class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="row"><div style="flex:1;font-weight:600">@AnthropicAI (Twitter)</div><span class="badge badge-dim">API</span><div class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
+      <div class="row"><div style="flex:1;font-weight:600">claude.ai/changelog</div><span class="badge badge-dim">Scrape</span><div class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></div></div>
     </div>
     <div class="card">
-      <div class="card-title">Ajouter une source</div>
-      <div class="field"><label>URL à surveiller</label><input class="input" id="new-url" placeholder="https://..."/></div>
-      <div class="field"><label>Type</label><select class="input"><option>RSS Feed</option><option>Page web (scraping)</option><option>API</option></select></div>
-      <button class="btn btn-primary btn-sm" onclick="ajouterSource()">+ Ajouter la source</button>
+      <div class="card-title"><span>+</span> Ajouter une source</div>
+      <div class="field"><label>URL</label><input class="input" id="new-url" placeholder="https://..."/></div>
+      <button class="btn btn-primary btn-sm" onclick="ajouterSource()">Ajouter</button>
     </div>
   </div>
 
-  <!-- ═══ POSTS ═══ -->
+  <!-- POSTS -->
   <div class="page" id="page-posts">
-    <div class="topbar"><div><div class="page-title">Posts générés</div><div class="page-sub">Historique de tous les posts créés par l'agent</div></div></div>
+    <div class="topbar"><div><div class="page-title">Historique des posts</div><div class="page-sub">Tous les posts générés par l'agent</div></div></div>
     <div class="card">
-      <div class="post-row"><div class="post-num">01</div><div class="post-info"><div class="post-title-t">Claude 4 Opus — Nouvelles capacités de raisonnement</div><div class="post-meta-t">Il y a 2h · anthropic.com/news · 3 slides</div></div><span class="badge badge-green">Publié</span></div>
-      <div class="post-row"><div class="post-num">02</div><div class="post-info"><div class="post-title-t">Claude Code Channels — Telegram & Discord</div><div class="post-meta-t">Il y a 5h · docs.claude.ai · 3 slides</div></div><span class="badge badge-green">Publié</span></div>
-      <div class="post-row"><div class="post-num">03</div><div class="post-info"><div class="post-title-t">API Vision étendue — Analyse vidéo en temps réel</div><div class="post-meta-t">Il y a 8h · @AnthropicAI · 3 slides</div></div><span class="badge badge-yellow">En attente</span><button class="btn btn-green btn-sm" onclick="publierPost()">Publier</button></div>
+      <div class="row"><div class="post-num">01</div><div class="post-info"><div class="post-title">Claude 4 Opus — Nouvelles capacités</div><div class="post-meta">Il y a 2h · 5 slides</div></div><span class="badge badge-green">Publié</span></div>
+      <div class="row"><div class="post-num">02</div><div class="post-info"><div class="post-title">Claude Code Channels</div><div class="post-meta">Il y a 5h · 5 slides</div></div><span class="badge badge-green">Publié</span></div>
+      <div class="row"><div class="post-num">03</div><div class="post-info"><div class="post-title">API Vision étendue</div><div class="post-meta">Il y a 8h · 5 slides</div></div><span class="badge badge-yellow">En attente</span></div>
     </div>
   </div>
 
-  <!-- ═══ PROMPT ═══ -->
-  <div class="page" id="page-prompt">
-    <div class="topbar"><div><div class="page-title">Prompt IA</div><div class="page-sub">Instruction envoyée à Claude pour générer les slides</div></div></div>
-    <div class="card">
-      <div class="field"><label>Clé API Claude</label><input class="input" type="password" placeholder="sk-ant-api03-..." id="claude-key"/></div>
-      <div class="field"><label>Modèle</label><select class="input"><option>claude-sonnet-4-20250514</option><option>claude-opus-4-20250514</option></select></div>
-      <div class="field"><label>Instruction système (prompt)</label>
-        <textarea class="prompt-area" id="system-prompt">Tu es rédacteur pour "L'information IA", média français N°1 sur l'actualité IA.
-
-Quand tu reçois une actualité Anthropic/Claude :
-1. Traduis en français naturel et percutant
-2. Rédige 3 slides carousel Instagram :
-   - Slide COVER : texte accrocheur en majuscules (max 10 mots)
-   - Slides 01 / 02 / 03 : numéro + titre gras + description courte (2-3 phrases)
-   - Slide CTA : "Abonne-toi pour en savoir plus sur l'IA !"
-3. Génère un caption Instagram avec emojis et hashtags FR
-
-Ton style : direct, informatif, sans jargon inutile.</textarea>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline" onclick="alert('Prompt réinitialisé')">Réinitialiser</button>
-        <button class="btn btn-primary" onclick="alert('Prompt sauvegardé !')">Sauvegarder</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Tester le prompt</div>
-      <div class="field"><label>Article ou tweet à tester</label><textarea class="prompt-area" id="test-article" placeholder="Colle ici un article ou un tweet..." style="min-height:80px"></textarea></div>
-      <button class="btn btn-primary btn-sm" onclick="testerGemini()">Générer les slides (test)</button>
-      <div id="gemini-result" style="margin-top:14px;display:none"></div>
-    </div>
-  </div>
-
-  <!-- ═══ LOGS ═══ -->
+  <!-- LOGS -->
   <div class="page" id="page-logs">
-    <div class="topbar"><div><div class="page-title">Journal des actions</div><div class="page-sub">Tout ce que l'agent a fait</div></div><button class="btn btn-outline btn-sm" onclick="clearLogs()">Effacer les logs</button></div>
-    <div class="card">
-      <div id="log-list">
-        <div class="log log-ok"><div class="log-t">14:02</div><div class="log-dot"></div><div class="log-msg">Scan terminé — 4 sources vérifiées, 0 nouveau contenu</div></div>
-        <div class="log log-ok"><div class="log-t">13:10</div><div class="log-dot"></div><div class="log-msg">Post #24 publié sur Instagram — carousel 3 slides ✓</div></div>
-        <div class="log log-info"><div class="log-t">13:08</div><div class="log-dot"></div><div class="log-msg">Claude API appelé — génération slides post #24 (432 tokens, 0.004$)</div></div>
-        <div class="log log-ok"><div class="log-t">13:06</div><div class="log-dot"></div><div class="log-msg">Nouveau contenu détecté : "Claude 4 Opus launch" — anthropic.com/news</div></div>
-        <div class="log log-warn"><div class="log-t">11:45</div><div class="log-dot"></div><div class="log-msg">Token Instagram expire dans 5 jours — renouvellement requis</div></div>
-      </div>
-    </div>
+    <div class="topbar"><div><div class="page-title">Logs</div><div class="page-sub">Journal des actions de l'agent</div></div><button class="btn btn-outline btn-sm" onclick="clearLogs()">Effacer</button></div>
+    <div class="card"><div id="log-list"></div></div>
   </div>
 
 </main>
 
 <script>
-// ── NAVIGATION ──
-function showPage(id){
+// CONFIG
+const CFG = {
+  META_TOKEN: 'EAAYgWw5dkZBIBREPmomgnhtlbNDDg9zw7Q5zsYFZC4g3ZC5auYZAVGvjnpb5XDFzrzUSad4xSX5k7dDioZAWQZCZBGx9bH8wGMfEgCxjidyKeqOn24ToRknP82WSDlzPZCHiCnLkhdBwSoSGfpnNFnUf1zCTac5f5VjeYYg3rsQnp7xFtMk7Wz2xfkcg2f2oDo4NBwZDZD',
+  INSTA_ID:  '17841439188239554',
+  GROQ_KEY:  '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',
+  IMGBB_KEY: '0678cb48fae0cf30732dfedecaf8ec72'
+};
+let instaOK = false, lastResult = null, lastCanvases = [];
+
+// NAV
+function goTo(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  event && event.currentTarget && event.currentTarget.classList.add('active');
+  if(btn) btn.classList.add('active');
 }
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',function(){
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
 
-// ── TOGGLE ──
-function toggleSwitch(el){el.classList.toggle('on');el.classList.toggle('off')}
+// UTILS
+function now(){return new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'});}
+function addLog(type,msg){
+  const d=document.createElement('div');
+  d.className='log-item log-'+type;
+  d.innerHTML=`<div class="log-time">${now()}</div><div class="log-dot"></div><div class="log-msg">${msg}</div>`;
+  document.getElementById('log-list').prepend(d);
+}
+function clearLogs(){document.getElementById('log-list').innerHTML='';}
 
-// ── SCAN ──
+// SCAN
 function lancerScan(){
   addLog('info','Scan manuel lancé...');
   document.getElementById('scan-status').textContent='Scan en cours...';
-  setTimeout(()=>{addLog('ok','4 sources vérifiées');document.getElementById('scan-status').textContent='Scan terminé à '+new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'})},1500);
-  setTimeout(()=>addLog('ok','Aucun nouveau contenu détecté'),2200);
+  setTimeout(()=>{addLog('ok','4 sources vérifiées — aucun nouveau contenu');document.getElementById('scan-status').textContent='Terminé à '+now();},1800);
 }
 
-// ── INSTAGRAM CONNECT ──
-let instagramConnected = false;
-
-function selectAccountType(type){
-  ['business','creator','personal'].forEach(t=>{
-    const btn=document.getElementById('type-'+t);
-    btn.classList.remove('btn-primary');
-    btn.classList.add('btn-outline');
-  });
-  document.getElementById('type-'+type).classList.remove('btn-outline');
-  document.getElementById('type-'+type).classList.add('btn-primary');
-  if(type==='personal'){
-    alert('Tu dois d\'abord passer ton compte en mode Business ou Creator dans les paramètres Instagram avant de continuer.');
-  }
-}
-
-async function testerConnexion(){
-  const token=document.getElementById('meta-token').value.trim();
-  const id=document.getElementById('insta-account-id').value.trim();
-  const result=document.getElementById('test-result');
-  if(!token||!id){result.style.display='block';result.style.color='var(--red)';result.textContent='⚠ Remplis le token et l\'ID de compte avant de tester.';return;}
-  result.style.display='block';result.style.color='var(--muted)';result.textContent='⏳ Test en cours...';
-  try {
-    const res = await fetch(`https://graph.facebook.com/v19.0/${id}?fields=id,username,name,followers_count&access_token=${token}`);
-    const data = await res.json();
-    if(data.error){
-      result.style.color='var(--red)';
-      result.textContent='❌ Erreur : '+data.error.message;
-    } else {
-      result.style.color='var(--green)';
-      result.textContent=`✓ Connexion réussie ! Compte : @${data.username||data.name} (ID: ${data.id})`;
-    }
-  } catch(e) {
-    result.style.color='var(--red)';
-    result.textContent='❌ Erreur réseau : '+e.message;
-  }
-}
-
-function connecterInstagram(){
-  const token=document.getElementById('meta-token').value;
-  const id=document.getElementById('insta-account-id').value;
-  if(!token||!id){alert('Remplis le token Meta et l\'ID de compte Instagram.');return;}
-  // Sauvegarder (en prod : localStorage ou backend)
-  localStorage.setItem('meta_token', token);
-  localStorage.setItem('insta_id', id);
-  instagramConnected=true;
-  document.getElementById('insta-not-connected').style.display='none';
-  document.getElementById('insta-connected').style.display='block';
-  document.getElementById('alert-insta').style.display='none';
-  document.getElementById('insta-nav-badge').textContent='✓';
-  document.getElementById('insta-nav-badge').className='nav-count nc-green';
-  document.getElementById('token-display').textContent=token.substring(0,8)+'••••••••';
-  addLog('ok','Compte Instagram connecté avec succès — @linformation.ia');
-}
-
-function deconnecterInstagram(){
-  if(!confirm('Déconnecter le compte Instagram ?'))return;
-  localStorage.removeItem('meta_token');
-  localStorage.removeItem('insta_id');
-  instagramConnected=false;
-  document.getElementById('insta-not-connected').style.display='block';
-  document.getElementById('insta-connected').style.display='none';
-  document.getElementById('alert-insta').style.display='flex';
-  document.getElementById('insta-nav-badge').textContent='!';
-  document.getElementById('insta-nav-badge').className='nav-count nc-yellow';
-  addLog('warn','Compte Instagram déconnecté');
-}
-
-// ── PUBLIER ──
-function publierPost(){
-  if(!instagramConnected){
-    if(confirm('Instagram n\'est pas connecté. Aller à la page de connexion ?')){showPage('instagram');}
-    return;
-  }
-  addLog('info','Publication du carousel en cours...');
-  setTimeout(()=>{addLog('ok','Post #25 publié sur Instagram @linformation.ia ✓');alert('Post publié avec succès sur Instagram !');},1800);
-}
-
-// ── SOURCES ──
+// SOURCES
 function ajouterSource(){
-  const url=document.getElementById('new-url').value;
+  const url=document.getElementById('new-url').value.trim();
   if(!url){alert('Entre une URL valide');return;}
-  addLog('info','Nouvelle source ajoutée : '+url);
+  addLog('info','Source ajoutée : '+url);
   document.getElementById('new-url').value='';
-  alert('Source ajoutée : '+url);
 }
 
-// ── LOGS ──
-function addLog(type,msg){
-  const list=document.getElementById('log-list');
-  const t=new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'});
-  const d=document.createElement('div');
-  d.className='log log-'+type;
-  d.innerHTML=`<div class="log-t">${t}</div><div class="log-dot"></div><div class="log-msg">${msg}</div>`;
-  list.prepend(d);
-}
-function clearLogs(){document.getElementById('log-list').innerHTML='<div class="log log-info"><div class="log-t">'+new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'})+'</div><div class="log-dot"></div><div class="log-msg">Logs effacés</div></div>';}
-
-// ── CONFIG PRE-REMPLI ──
-const CONFIG = {
-  META_TOKEN: 'EAAYgWw5dkZBIBREPmomgnhtlbNDDg9zw7Q5zsYFZC4g3ZC5auYZAVGvjnpb5XDFzrzUSad4xSX5k7dDioZAWQZCZBGx9bH8wGMfEgCxjidyKeqOn24ToRknP82WSDlzPZCHiCnLkhdBwSoSGfpnNFnUf1zCTac5f5VjeYYg3rsQnp7xFtMk7Wz2xfkcg2f2oDo4NBwZDZD',
-  INSTA_ID: '17841439188239554',
-  GROQ_KEY: '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',
-  IMGBB_KEY: '0678cb48fae0cf30732dfedecaf8ec72'
-};
-
-function dessinerSlide(canvas, type, data){
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  // Fond violet gradient
-  const grad = ctx.createLinearGradient(0,0,w,h);
-  grad.addColorStop(0,'#4c1d95');
-  grad.addColorStop(1,'#7c3aed');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,w,h);
-  // Pattern subtil
-  ctx.fillStyle='rgba(255,255,255,0.03)';
-  for(let i=0;i<w;i+=40){ctx.fillRect(i,0,1,h);}
-  for(let i=0;i<h;i+=40){ctx.fillRect(0,i,w,1);}
-  // Logo en haut
-  ctx.fillStyle='rgba(255,255,255,0.15)';
-  ctx.fillRect(60,60,w-120,2);
-  ctx.fillStyle='#fff';
-  ctx.font='bold 32px Inter,Arial,sans-serif';
-  ctx.textAlign='left';
-  ctx.fillText("L'information IA", 60, 52);
-  // Contenu selon type
-  if(type==='cover'){
-    ctx.fillStyle='rgba(255,255,255,0.9)';
-    ctx.font='bold 72px Inter,Arial,sans-serif';
-    ctx.textAlign='center';
-    // Word wrap
-    const words = data.text.toUpperCase().split(' ');
-    let lines=[], line='';
-    words.forEach(w=>{
-      const test=line+(line?' ':'')+w;
-      if(ctx.measureText(test).width>w-120){lines.push(line);line=w;}
-      else line=test;
-    });
-    lines.push(line);
-    const startY = h/2 - (lines.length*80)/2;
-    lines.forEach((l,i)=>ctx.fillText(l,w/2,startY+i*80));
-  } else if(type==='slide'){
-    // Numéro
-    ctx.fillStyle='rgba(255,255,255,0.3)';
-    ctx.font='bold 120px Inter,Arial,sans-serif';
-    ctx.textAlign='left';
-    ctx.fillText(data.num, 60, h-200);
-    // Titre
-    ctx.fillStyle='#fff';
-    ctx.font='bold 52px Inter,Arial,sans-serif';
-    ctx.textAlign='left';
-    const tw=data.titre.split(' ');
-    let tlines=[],tline='';
-    tw.forEach(word=>{
-      const test=tline+(tline?' ':'')+word;
-      ctx.font='bold 52px Inter,Arial,sans-serif';
-      if(ctx.measureText(test).width>w-120){tlines.push(tline);tline=word;}
-      else tline=test;
-    });
-    tlines.push(tline);
-    tlines.forEach((l,i)=>ctx.fillText(l,60,200+i*65));
-    // Desc
-    ctx.fillStyle='rgba(255,255,255,0.8)';
-    ctx.font='36px Inter,Arial,sans-serif';
-    const dw=data.desc.split(' ');
-    let dlines=[],dline='';
-    dw.forEach(word=>{
-      const test=dline+(dline?' ':'')+word;
-      if(ctx.measureText(test).width>w-120){dlines.push(dline);dline=word;}
-      else dline=test;
-    });
-    dlines.push(dline);
-    dlines.slice(0,4).forEach((l,i)=>ctx.fillText(l,60,400+i*50));
-  } else if(type==='cta'){
-    ctx.fillStyle='#fff';
-    ctx.font='bold 58px Inter,Arial,sans-serif';
-    ctx.textAlign='center';
-    ctx.fillText('ABONNE-TOI', w/2, h/2-40);
-    ctx.fillStyle='rgba(255,255,255,0.7)';
-    ctx.font='36px Inter,Arial,sans-serif';
-    ctx.fillText("pour l'actu IA 🚀", w/2, h/2+30);
-    // Bouton
-    ctx.fillStyle='rgba(255,255,255,0.2)';
-    ctx.beginPath();
-    ctx.roundRect(w/2-160,h/2+80,320,70,35);
-    ctx.fill();
-    ctx.fillStyle='#fff';
-    ctx.font='bold 32px Inter,Arial,sans-serif';
-    ctx.fillText('@insideia.fr', w/2, h/2+125);
-  }
-  // Ligne bas
-  ctx.fillStyle='rgba(255,255,255,0.15)';
-  ctx.fillRect(60,h-80,w-120,2);
-}
-
-async function testerGemini(){
-  const article = document.getElementById('test-article').value.trim();
-  if(!article){alert('Colle une actualité dans la zone de texte !');return;}
-  const resultDiv = document.getElementById('gemini-result');
-  resultDiv.style.display='block';
-  resultDiv.innerHTML='<div style="color:var(--muted);font-size:13px">⏳ Génération en cours...</div>';
-  const result = await genererAvecGemini(article);
-  if(result){
-    // Générer les canvas
-    const slides = [
-      {type:'cover', data:{text:result.cover}},
-      ...result.slides.map(s=>({type:'slide', data:s})),
-      {type:'cta', data:{}}
-    ];
-    let html = `<div style="background:#f8f7ff;border:1px solid var(--purple-border);border-radius:10px;padding:16px">
-      <div style="font-weight:700;font-size:14px;margin-bottom:16px;color:var(--purple)">✓ ${slides.length} Slides générées !</div>
-      <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px" id="slides-preview"></div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px"><strong>Caption :</strong></div>
-      <div style="font-size:12px;background:#fff;padding:10px;border-radius:6px;border:1px solid var(--border);margin-bottom:12px">${result.caption}</div>
-      <button class="btn btn-green" onclick="publierCarousel()" id="btn-publier">🚀 Publier sur Instagram</button>
-      <div id="publish-status" style="margin-top:10px;font-size:13px"></div>
-    </div>`;
-    resultDiv.innerHTML = html;
-    const preview = document.getElementById('slides-preview');
-    slides.forEach((s,i)=>{
-      const canvas = document.createElement('canvas');
-      canvas.width=1080; canvas.height=1350;
-      canvas.style.cssText='width:120px;height:150px;border-radius:8px;flex-shrink:0;cursor:pointer;border:2px solid var(--purple-border)';
-      dessinerSlide(canvas, s.type, s.data);
-      canvas.title='Cliquer pour télécharger';
-      canvas.onclick=()=>{
-        const a=document.createElement('a');
-        a.download='slide-'+(i+1)+'.png';
-        a.href=canvas.toDataURL('image/png');
-        a.click();
-      };
-      preview.appendChild(canvas);
-    });
-    window._lastResult = result;
-    window._lastCanvases = Array.from(document.getElementById('slides-preview').querySelectorAll('canvas'));
-    addLog('ok','Slides générées et prêtes à télécharger ✓');
-  } else {
-    resultDiv.innerHTML='<div style="color:var(--red);font-size:13px">❌ Erreur lors de la génération.</div>';
-  }
-}
-
-async function genererAvecGemini(article){
-  addLog('info','Groq API appele...');
-  const prompt = 'Tu es redacteur pour L information IA, media francais sur l IA. Actualite : ' + article + '. Genere un carousel Instagram FR avec cover accrocheur, 3 slides (num+titre+desc), cta, caption avec emojis et hashtags. Reponds uniquement en JSON valide sans markdown: {"cover":"...","slides":[{"num":"01","titre":"...","desc":"..."},{"num":"02","titre":"...","desc":"..."},{"num":"03","titre":"...","desc":"..."}],"cta":"...","caption":"..."}';
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.GROQ_KEY},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.7})
-    });
-    const data = await res.json();
-    if(data.error){throw new Error(data.error.message);}
-    const text = data.choices?.[0]?.message?.content || '';
-    const cleaned = text.replace(/```json|```/g,'').trim();
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if(!jsonMatch) throw new Error('JSON invalide');
-    const result = JSON.parse(jsonMatch[0]);
-    addLog('ok','Slides generees avec Groq');
-    return result;
-  } catch(e){addLog('err','Erreur Groq : '+e.message);return null;}
-}
-
-// ── UPLOAD IMGBB ──
-async function uploaderImage(canvas){
-  return new Promise(async (resolve, reject)=>{
-    const dataUrl = canvas.toDataURL('image/png');
-    const base64 = dataUrl.split(',')[1];
-    const form = new FormData();
-    form.append('key', CONFIG.IMGBB_KEY);
-    form.append('image', base64);
-    try {
-      const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
-      const data = await res.json();
-      if(data.success) resolve(data.data.url);
-      else reject(new Error(data.error?.message || 'Upload failed'));
-    } catch(e){ reject(e); }
+// GROQ API
+async function appelGroq(article){
+  const prompt=`Tu es rédacteur pour "L'information IA", média français sur l'IA.
+Actualité: "${article}"
+Génère un carousel Instagram en français.
+Réponds UNIQUEMENT en JSON valide, sans markdown, sans texte avant ou après:
+{"cover":"TEXTE COVER EN MAJUSCULES MAX 8 MOTS","slides":[{"num":"01","titre":"Titre slide 1","desc":"Description 2-3 phrases max."},{"num":"02","titre":"Titre slide 2","desc":"Description 2-3 phrases max."},{"num":"03","titre":"Titre slide 3","desc":"Description 2-3 phrases max."}],"cta":"Abonne-toi pour l'actu IA !","caption":"Caption avec emojis et #hashtags FR"}`;
+  const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+CFG.GROQ_KEY},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.7,max_tokens:900})
   });
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  const text=data.choices?.[0]?.message?.content||'';
+  const m=text.match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('Réponse Groq invalide');
+  return JSON.parse(m[0]);
 }
 
-// ── PUBLIER CAROUSEL ──
-async function publierCarousel(){
-  const btn = document.getElementById('btn-publier');
-  const status = document.getElementById('publish-status');
-  if(!window._lastCanvases || !window._lastResult){
-    status.innerHTML='<span style="color:var(--red)">❌ Génère d'abord les slides !</span>';
-    return;
+// CANVAS
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+
+function wrapText(ctx,text,maxW){
+  const words=text.split(' '),lines=[];let line='';
+  for(const w of words){const t=line+(line?' ':'')+w;if(ctx.measureText(t).width>maxW){lines.push(line);line=w;}else line=t;}
+  lines.push(line);return lines;
+}
+
+function dessinerSlide(canvas,type,data){
+  const ctx=canvas.getContext('2d');
+  const W=1080,H=1350;
+  canvas.width=W;canvas.height=H;
+
+  // Fond violet
+  const g=ctx.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#1e0a4a');g.addColorStop(0.5,'#3b1078');g.addColorStop(1,'#4c1d95');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+
+  // Cercles déco
+  ctx.save();ctx.globalAlpha=0.08;ctx.fillStyle='#a78bfa';
+  ctx.beginPath();ctx.arc(W+50,80,380,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(-50,H-50,250,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+
+  // Logo
+  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.fillRect(60,65,4,40);
+  ctx.fillStyle='rgba(255,255,255,0.9)';ctx.font='600 30px DM Sans,Arial,sans-serif';
+  ctx.textAlign='left';ctx.fillText("L'information IA",80,98);
+
+  // Séparateur header
+  ctx.fillStyle='rgba(167,139,250,0.35)';ctx.fillRect(60,125,W-120,1);
+
+  if(type==='cover'){
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(167,139,250,0.8)';ctx.font='500 26px DM Sans,Arial,sans-serif';
+    ctx.fillText('ACTUALITÉ IA',W/2,220);
+
+    ctx.fillStyle='#fff';ctx.font='800 92px DM Sans,Arial,sans-serif';
+    const lines=wrapText(ctx,(data.text||'NEWS IA').toUpperCase(),W-140);
+    const sy=H/2-50-(lines.length-1)*56;
+    lines.forEach((l,i)=>ctx.fillText(l,W/2,sy+i*108));
+
+    ctx.fillStyle='rgba(167,139,250,0.25)';rr(ctx,W/2-140,H-195,280,58,29);ctx.fill();
+    ctx.fillStyle='#c4b5fd';ctx.font='600 24px DM Sans,Arial,sans-serif';
+    ctx.fillText('Swipe pour en savoir plus →',W/2,H-158);
+
+  } else if(type==='slide'){
+    // Numéro fantôme
+    ctx.save();ctx.globalAlpha=0.06;ctx.fillStyle='#fff';
+    ctx.font='900 350px DM Sans,Arial,sans-serif';ctx.textAlign='right';
+    ctx.fillText(data.num||'01',W+20,H-40);ctx.restore();
+
+    // Chip numéro
+    ctx.fillStyle='rgba(167,139,250,0.2)';rr(ctx,60,195,96,46,23);ctx.fill();
+    ctx.fillStyle='#a78bfa';ctx.font='700 24px DM Sans,Arial,sans-serif';
+    ctx.textAlign='center';ctx.fillText(data.num||'01',108,224);
+
+    // Titre
+    ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font='700 68px DM Sans,Arial,sans-serif';
+    const tlines=wrapText(ctx,data.titre||'Titre',W-130);
+    tlines.slice(0,3).forEach((l,i)=>ctx.fillText(l,60,310+i*82));
+
+    // Desc
+    ctx.fillStyle='rgba(255,255,255,0.68)';ctx.font='400 38px DM Sans,Arial,sans-serif';
+    const dy=tlines.length<=2?500:570;
+    const dlines=wrapText(ctx,data.desc||'',W-130);
+    dlines.slice(0,5).forEach((l,i)=>ctx.fillText(l,60,dy+i*54));
+
+  } else if(type==='cta'){
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(167,139,250,0.15)';ctx.beginPath();ctx.arc(W/2,360,130,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='500 28px DM Sans,Arial,sans-serif';
+    ctx.fillText('TU AS AIMÉ CE CONTENU ?',W/2,560);
+    ctx.fillStyle='#fff';ctx.font='800 86px DM Sans,Arial,sans-serif';
+    ctx.fillText('ABONNE-',W/2,668);ctx.fillText('TOI !',W/2,762);
+    ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font='400 34px DM Sans,Arial,sans-serif';
+    ctx.fillText("Actu IA chaque semaine 🚀",W/2,840);
+    ctx.fillStyle='rgba(167,139,250,0.25)';rr(ctx,W/2-170,900,340,70,35);ctx.fill();
+    ctx.fillStyle='#c4b5fd';ctx.font='700 30px DM Sans,Arial,sans-serif';
+    ctx.fillText('@insideia.fr',W/2,945);
   }
+
+  // Footer
+  ctx.fillStyle='rgba(167,139,250,0.35)';ctx.fillRect(60,H-105,W-120,1);
+  ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font='400 22px DM Sans,Arial,sans-serif';
+  ctx.textAlign='left';ctx.fillText("L'information IA • insideia.fr",60,H-68);
+  ctx.textAlign='right';ctx.fillText('Suivre pour + 👉',W-60,H-68);
+}
+
+// GÉNÉRER
+async function genererSlides(){
+  const article=document.getElementById('article-input').value.trim();
+  if(!article){alert('Colle une actualité !');return;}
+  const btn=document.getElementById('btn-generer');
+  const loading=document.getElementById('gen-loading');
+  const loadText=document.getElementById('gen-loading-text');
+  document.getElementById('result-section').style.display='none';
+  btn.disabled=true;btn.textContent='⏳ Génération...';
+  loading.style.display='block';loadText.textContent='Groq génère le texte...';
+  addLog('info','Groq API appelé...');
+  try{
+    const result=await appelGroq(article);
+    lastResult=result;
+    loadText.textContent='Dessin des slides en cours...';
+    const slidesData=[
+      {type:'cover',data:{text:result.cover}},
+      ...result.slides.map(s=>({type:'slide',data:s})),
+      {type:'cta',data:{}}
+    ];
+    const preview=document.getElementById('slides-preview');
+    preview.innerHTML='';lastCanvases=[];
+    slidesData.forEach((s,i)=>{
+      const c=document.createElement('canvas');
+      dessinerSlide(c,s.type,s.data);
+      c.style.cssText='width:86px;height:108px;border-radius:8px;flex-shrink:0;cursor:pointer;border:2px solid rgba(124,92,252,.3);transition:all .15s';
+      c.onmouseenter=()=>{c.style.transform='scale(1.1)';c.style.borderColor='rgba(167,139,250,.8)';};
+      c.onmouseleave=()=>{c.style.transform='scale(1)';c.style.borderColor='rgba(124,92,252,.3)';};
+      c.onclick=()=>{const a=document.createElement('a');a.download='slide-'+(i+1)+'.png';a.href=c.toDataURL('image/png');a.click();};
+      preview.appendChild(c);lastCanvases.push(c);
+    });
+    document.getElementById('slides-count').textContent='— '+slidesData.length+' slides';
+    document.getElementById('caption-display').textContent=result.caption;
+    document.getElementById('publish-status').innerHTML='';
+    document.getElementById('btn-publier').disabled=false;
+    document.getElementById('btn-publier').textContent='🚀 Publier le carousel sur Instagram';
+    document.getElementById('result-section').style.display='block';
+    addLog('ok','Slides générées ✓ — '+slidesData.length+' slides prêtes');
+  }catch(e){addLog('err','Erreur Groq : '+e.message);alert('Erreur : '+e.message);}
+  btn.disabled=false;btn.textContent='⚡ Générer les slides avec Groq';
+  loading.style.display='none';
+}
+
+// UPLOAD IMGBB
+async function uploaderImage(canvas){
+  const b64=canvas.toDataURL('image/png').split(',')[1];
+  const f=new FormData();f.append('key',CFG.IMGBB_KEY);f.append('image',b64);
+  const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:f});
+  const data=await res.json();
+  if(!data.success) throw new Error(data.error?.message||'ImgBB upload échoué');
+  return data.data.url;
+}
+
+// PUBLIER
+async function publierCarousel(){
+  if(!instaOK){alert('Connecte Instagram d\'abord !');return;}
+  if(!lastCanvases.length){alert('Génère les slides d\'abord !');return;}
+  const btn=document.getElementById('btn-publier');
+  const status=document.getElementById('publish-status');
   btn.disabled=true;
-  btn.textContent='⏳ Upload en cours...';
-  status.innerHTML='<span style="color:var(--muted)">Upload des images sur ImgBB...</span>';
-  try {
-    // Upload toutes les images
-    const urls = [];
-    for(let i=0; i<window._lastCanvases.length; i++){
-      status.innerHTML=`<span style="color:var(--muted)">Upload slide ${i+1}/${window._lastCanvases.length}...</span>`;
-      const url = await uploaderImage(window._lastCanvases[i]);
-      urls.push(url);
-      addLog('ok','Slide '+(i+1)+' uploadée : '+url);
+  try{
+    const urls=[];
+    for(let i=0;i<lastCanvases.length;i++){
+      btn.textContent=`⏳ Upload ${i+1}/${lastCanvases.length}...`;
+      status.innerHTML=`<span style="color:var(--muted)">Upload slide ${i+1}/${lastCanvases.length}...</span>`;
+      urls.push(await uploaderImage(lastCanvases[i]));
+      addLog('ok','Slide '+(i+1)+' uploadée ✓');
     }
-    status.innerHTML='<span style="color:var(--muted)">Publication sur Instagram...</span>';
-    btn.textContent='⏳ Publication...';
-    // Créer carousel sur Instagram
-    const containerIds = [];
+    btn.textContent='⏳ Création carousel...';
+    status.innerHTML='<span style="color:var(--muted)">Création du carousel Meta...</span>';
+    const ids=[];
     for(const url of urls){
-      const r = await fetch(`https://graph.facebook.com/v19.0/${CONFIG.INSTA_ID}/media`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({image_url:url, is_carousel_item:true, access_token:CONFIG.META_TOKEN})
-      });
-      const d = await r.json();
-      if(d.error) throw new Error(d.error.message);
-      containerIds.push(d.id);
+      const r=await fetch(`https://graph.facebook.com/v19.0/${CFG.INSTA_ID}/media`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_url:url,is_carousel_item:true,access_token:CFG.META_TOKEN})});
+      const d=await r.json();if(d.error) throw new Error(d.error.message);ids.push(d.id);
     }
-    // Publier le carousel
-    const r2 = await fetch(`https://graph.facebook.com/v19.0/${CONFIG.INSTA_ID}/media`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({media_type:'CAROUSEL', children:containerIds.join(','), caption:window._lastResult.caption, access_token:CONFIG.META_TOKEN})
-    });
-    const d2 = await r2.json();
-    if(d2.error) throw new Error(d2.error.message);
-    const r3 = await fetch(`https://graph.facebook.com/v19.0/${CONFIG.INSTA_ID}/media_publish`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({creation_id:d2.id, access_token:CONFIG.META_TOKEN})
-    });
-    const d3 = await r3.json();
-    if(d3.error) throw new Error(d3.error.message);
-    status.innerHTML='<span style="color:var(--green)">✅ Carousel publié sur Instagram @insideia.fr !</span>';
+    const r2=await fetch(`https://graph.facebook.com/v19.0/${CFG.INSTA_ID}/media`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({media_type:'CAROUSEL',children:ids.join(','),caption:lastResult.caption,access_token:CFG.META_TOKEN})});
+    const d2=await r2.json();if(d2.error) throw new Error(d2.error.message);
+    btn.textContent='⏳ Publication...';
+    const r3=await fetch(`https://graph.facebook.com/v19.0/${CFG.INSTA_ID}/media_publish`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({creation_id:d2.id,access_token:CFG.META_TOKEN})});
+    const d3=await r3.json();if(d3.error) throw new Error(d3.error.message);
+    status.innerHTML='<span style="color:var(--green)">✅ Carousel publié sur @insideia.fr !</span>';
     btn.textContent='✅ Publié !';
-    addLog('ok','Carousel publié sur Instagram ✓ (ID: '+d3.id+')');
-  } catch(e){
-    status.innerHTML='<span style="color:var(--red)">❌ Erreur : '+e.message+'</span>';
-    btn.disabled=false;
-    btn.textContent='🚀 Publier sur Instagram';
+    addLog('ok','Carousel publié Instagram ✓ ID: '+d3.id);
+  }catch(e){
+    status.innerHTML='<span style="color:var(--red)">❌ '+e.message+'</span>';
+    btn.disabled=false;btn.textContent='🚀 Publier le carousel sur Instagram';
     addLog('err','Erreur publication : '+e.message);
   }
 }
 
-// ── AUTO-CONNEXION ──
+// INSTAGRAM
+async function testerConnexion(){
+  const token=document.getElementById('meta-token').value.trim();
+  const id=document.getElementById('insta-id').value.trim();
+  const res=document.getElementById('test-result');
+  if(!token||!id){res.style.display='block';res.style.color='var(--red)';res.textContent='⚠ Remplis les deux champs.';return;}
+  res.style.display='block';res.style.color='var(--muted)';res.textContent='⏳ Test...';
+  try{
+    const r=await fetch(`https://graph.facebook.com/v19.0/${id}?fields=id,username,name&access_token=${token}`);
+    const data=await r.json();
+    if(data.error){res.style.color='var(--red)';res.textContent='❌ '+data.error.message;}
+    else{res.style.color='var(--green)';res.textContent='✅ Compte : @'+(data.username||data.name);}
+  }catch(e){res.style.color='var(--red)';res.textContent='❌ Erreur réseau';}
+}
+
+function connecterInstagram(){
+  const token=document.getElementById('meta-token').value.trim();
+  const id=document.getElementById('insta-id').value.trim();
+  if(!token||!id){alert('Remplis le token et l\'ID.');return;}
+  CFG.META_TOKEN=token;CFG.INSTA_ID=id;instaOK=true;
+  document.getElementById('insta-not-connected').style.display='none';
+  document.getElementById('insta-connected').style.display='block';
+  document.getElementById('alert-insta').style.display='none';
+  document.getElementById('insta-badge').textContent='✓';
+  document.getElementById('insta-badge').className='nav-badge nb-green';
+  document.getElementById('token-display').textContent=token.substring(0,12)+'••••••••';
+  addLog('ok','Instagram connecté @insideia.fr ✓');
+}
+
+function deconnecter(){
+  if(!confirm('Déconnecter Instagram ?'))return;
+  instaOK=false;
+  document.getElementById('insta-not-connected').style.display='block';
+  document.getElementById('insta-connected').style.display='none';
+  document.getElementById('alert-insta').style.display='flex';
+  document.getElementById('insta-badge').textContent='!';
+  document.getElementById('insta-badge').className='nav-badge nb-yellow';
+  addLog('warn','Instagram déconnecté');
+}
+
+// AUTO-INIT
 window.onload=function(){
-  document.getElementById('meta-token').value=CONFIG.META_TOKEN;
-  document.getElementById('insta-account-id').value=CONFIG.INSTA_ID;
-  connecterInstagram();
-  const ck=document.getElementById('claude-key');
-  if(ck) ck.value=CONFIG.GROQ_KEY;
+  document.getElementById('meta-token').value=CFG.META_TOKEN;
+  document.getElementById('insta-id').value=CFG.INSTA_ID;
+  instaOK=true;
+  document.getElementById('insta-not-connected').style.display='none';
+  document.getElementById('insta-connected').style.display='block';
+  document.getElementById('alert-insta').style.display='none';
+  document.getElementById('insta-badge').textContent='✓';
+  document.getElementById('insta-badge').className='nav-badge nb-green';
+  document.getElementById('token-display').textContent=CFG.META_TOKEN.substring(0,12)+'••••••••';
+  addLog('ok','Agent démarré — Instagram auto-connecté ✓');
+  addLog('info','Groq llama-3.3-70b + ImgBB prêts');
 };
 </script>
 </body>
