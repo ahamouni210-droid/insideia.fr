@@ -619,7 +619,7 @@ function clearLogs(){document.getElementById('log-list').innerHTML='<div class="
 const CONFIG = {
   META_TOKEN: 'EAAYgWw5dkZBIBREPmomgnhtlbNDDg9zw7Q5zsYFZC4g3ZC5auYZAVGvjnpb5XDFzrzUSad4xSX5k7dDioZAWQZCZBGx9bH8wGMfEgCxjidyKeqOn24ToRknP82WSDlzPZCHiCnLkhdBwSoSGfpnNFnUf1zCTac5f5VjeYYg3rsQnp7xFtMk7Wz2xfkcg2f2oDo4NBwZDZD',
   INSTA_ID: '17841439188239554',
-  GEMINI_KEY: 'AIzaSyAqlZjlK_kmrHrj1ASxHri_-GkbWNjw2_o'
+  GROQ_KEY: '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'
 };
 
 async function testerGemini(){
@@ -646,24 +646,24 @@ async function testerGemini(){
 }
 
 async function genererAvecGemini(article){
-  addLog('info','Gemini API appele...');
-  const prompt = 'Tu es redacteur pour L information IA, media francais sur l IA. Actualite : ' + article + '. Genere un carousel Instagram FR avec cover accrocheur, 3 slides (num+titre+desc), cta, caption avec emojis et hashtags. Reponds uniquement en JSON valide: {"cover":"...","slides":[{"num":"01","titre":"...","desc":"..."},{"num":"02","titre":"...","desc":"..."},{"num":"03","titre":"...","desc":"..."}],"cta":"...","caption":"..."}';
+  addLog('info','Groq API appele...');
+  const prompt = 'Tu es redacteur pour L information IA, media francais sur l IA. Actualite : ' + article + '. Genere un carousel Instagram FR avec cover accrocheur, 3 slides (num+titre+desc), cta, caption avec emojis et hashtags. Reponds uniquement en JSON valide sans markdown: {"cover":"...","slides":[{"num":"01","titre":"...","desc":"..."},{"num":"02","titre":"...","desc":"..."},{"num":"03","titre":"...","desc":"..."}],"cta":"...","caption":"..."}';
   try {
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+CONFIG.GEMINI_KEY,{
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.GROQ_KEY},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.7})
     });
     const data = await res.json();
     if(data.error){throw new Error(data.error.message);}
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = data.choices?.[0]?.message?.content || '';
     const cleaned = text.replace(/```json|```/g,'').trim();
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if(!jsonMatch) throw new Error('JSON invalide');
     const result = JSON.parse(jsonMatch[0]);
-    addLog('ok','Slides generees avec Gemini');
+    addLog('ok','Slides generees avec Groq');
     return result;
-  } catch(e){addLog('err','Erreur Gemini : '+e.message);return null;}
+  } catch(e){addLog('err','Erreur Groq : '+e.message);return null;}
 }
 
 // ── AUTO-CONNEXION ──
@@ -672,7 +672,7 @@ window.onload=function(){
   document.getElementById('insta-account-id').value=CONFIG.INSTA_ID;
   connecterInstagram();
   const ck=document.getElementById('claude-key');
-  if(ck) ck.value=CONFIG.GEMINI_KEY;
+  if(ck) ck.value=CONFIG.GROQ_KEY;
 };
 </script>
 </body>
